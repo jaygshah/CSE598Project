@@ -92,7 +92,11 @@ class ParameterServer(object):
 
     def apply_gradients(self, *gradients):
         summed_gradients = [
-            np.stack(gradient_zip).sum(axis=0)
+            np.stack(gradient_zip).mean(axis=0)
+            
+            # originally it had sum as implemented 
+            # below here
+            # np.stack(gradient_zip).sum(axis=0) 
             for gradient_zip in zip(*gradients)
         ]
         self.optimizer.zero_grad()
@@ -128,13 +132,14 @@ iterations = 500
 num_workers = 5
 
 ray.init(ignore_reinit_error=True)
-ps = ParameterServer.remote(1e-2)
+ps = ParameterServer.remote(0.03)
 workers = [DataWorker.remote() for i in range(num_workers)]
 
 model = ConvNet()
 test_loader = get_data_loader()[1]
 
 print("Running synchronous parameter server training.")
+print("==============================================")
 current_weights = ps.get_weights.remote()
 
 start_time_1 = time.time()
@@ -158,9 +163,10 @@ print('Total time for Synchronous: {0} seconds'.format(time.time() - start_time_
 ray.shutdown()
 
 print("Running Asynchronous Parameter Server Training.")
+print("===============================================")
 
 ray.init(ignore_reinit_error=True)
-ps = ParameterServer.remote(1e-2)
+ps = ParameterServer.remote(0.03)
 workers = [DataWorker.remote() for i in range(num_workers)]
 
 current_weights = ps.get_weights.remote()
