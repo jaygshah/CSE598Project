@@ -92,11 +92,11 @@ class ParameterServer(object):
 
     def apply_gradients(self, *gradients):
         summed_gradients = [
-            np.stack(gradient_zip).mean(axis=0)
+            # np.stack(gradient_zip).mean(axis=0)
             
             # originally it had sum as implemented 
             # below here
-            # np.stack(gradient_zip).sum(axis=0) 
+            np.stack(gradient_zip).sum(axis=0) 
             for gradient_zip in zip(*gradients)
         ]
         self.optimizer.zero_grad()
@@ -157,7 +157,7 @@ for i in range(iterations):
         accuracy = evaluate(model, test_loader)
         print("Iter {}: \taccuracy is {:.1f}".format(i, accuracy))
 
-print("Final accuracy is {:.1f}.".format(accuracy))
+print("Final accuracy for Synchronous is {:.1f}.".format(accuracy))
 print('Total time for Synchronous: {0} seconds'.format(time.time() - start_time_1))
 # Clean up Ray resources and processes before the next example.
 ray.shutdown()
@@ -187,10 +187,10 @@ for i in range(iterations * num_workers):
     gradients[worker.compute_gradients.remote(current_weights)] = worker
 
     if i % 100 == 0:
-        # Evaluate the current model after every 10 updates.
+        # Evaluate the current model after every 100 updates.
         model.set_weights(ray.get(current_weights))
         accuracy = evaluate(model, test_loader)
         print("Iter {}: \taccuracy is {:.1f}".format(i, accuracy))
 
-print("Final accuracy is {:.1f}.".format(accuracy))
+print("Final accuracy for Aynchronous is {:.1f}.".format(accuracy))
 print('Total time for Asynchronous: {0} seconds'.format(time.time() - start_time_2))
