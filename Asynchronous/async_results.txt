@@ -1,0 +1,41 @@
+#######################
+########       ########
+######  Results  ######
+########       ########
+#######################
+
+
+Original baseline:
+iterations = 500
+num_workers = 5
+learning rate = 0.03
+
+Final accuracy for Aynchronous is 96.3.
+Total time for Asynchronous: 77.09075403213501 seconds
+
+===========================================================
+
+###########################################
+###  Changing Parameter Server Updates  ###
+###########################################
+
+1. Original - Sum + Mean:
+
+Final accuracy for Aynchronous is 95.1.
+Total time for Asynchronous: 108.99456524848938 seconds
+
+2. 
+
+===========================================================
+
+################################
+###  Changing Learning Rate  ###
+################################
+
+1. Original - 0.03 + 0.01:
+
+Final accuracy for Aynchronous is 92.6.
+Total time for Asynchronous: 159.59600925445557 seconds
+
+
+===========================================================

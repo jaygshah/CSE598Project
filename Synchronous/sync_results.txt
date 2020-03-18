@@ -1,0 +1,40 @@
+#######################
+########       ########
+######  Results  ######
+########       ########
+#######################
+
+
+Original baseline:
+iterations = 500
+num_workers = 5
+learning rate = 0.03
+
+Final accuracy for Synchronous is 95.9.
+Total time for Synchronous: 88.36375784873962 seconds
+
+===========================================================
+
+###########################################
+###  Changing Parameter Server Updates  ###
+###########################################
+
+1. Original - Sum + Mean:
+
+Final accuracy for Synchronous is 90.1.
+Total time for Synchronous: 102.35314607620239 seconds
+
+2. 
+
+===========================================================
+
+################################
+###  Changing Learning Rate  ###
+################################
+
+1. Original - 0.03 + 0.01:
+
+Final accuracy for Synchronous is 91.7.
+Total time for Synchronous: 192.04357504844666 seconds
+
+===========================================================
