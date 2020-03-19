@@ -24,7 +24,15 @@ Total time for Asynchronous: 77.09075403213501 seconds
 Final accuracy for Aynchronous is 95.1.
 Total time for Asynchronous: 108.99456524848938 seconds
 
-2. 
+2. Original - SGD + Adam:
+
+Final accuracy for Aynchronous is 10.7.
+Total time for Asynchronous: 172.5345847606659 seconds
+
+3. Original - SGD + Adagrad:
+
+Final accuracy for Aynchronous is 95.8.
+Total time for Asynchronous: 166.5284299850464 seconds
 
 ===========================================================
 

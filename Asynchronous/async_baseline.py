@@ -132,7 +132,7 @@ iterations = 500
 num_workers = 5
 
 ray.init(ignore_reinit_error=True)
-ps = ParameterServer.remote(0.01)
+ps = ParameterServer.remote(0.03)
 workers = [DataWorker.remote() for i in range(num_workers)]
 
 model = ConvNet()

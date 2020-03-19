@@ -88,7 +88,8 @@ class ConvNet(nn.Module):
 class ParameterServer(object):
     def __init__(self, lr):
         self.model = ConvNet()
-        self.optimizer = torch.optim.SGD(self.model.parameters(), lr=lr)
+        # self.optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
+        self.optimizer = torch.optim.Adagrad(self.model.parameters(), lr=lr)
 
     def apply_gradients(self, *gradients):
         summed_gradients = [

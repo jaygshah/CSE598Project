@@ -24,7 +24,15 @@ Total time for Synchronous: 88.36375784873962 seconds
 Final accuracy for Synchronous is 90.1.
 Total time for Synchronous: 102.35314607620239 seconds
 
-2. 
+2. Original - SGD + Adam:
+
+Final accuracy for Synchronous is 97.0.
+Total time for Synchronous: 205.5743908882141 seconds
+
+3. Original - SGD + Adagrad:
+
+Final accuracy for Synchronous is 94.0.
+Total time for Synchronous: 185.8699300289154 seconds
 
 ===========================================================
 
