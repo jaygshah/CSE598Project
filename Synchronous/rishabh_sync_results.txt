@@ -1,0 +1,59 @@
+#######################
+########       ########
+######  Results  ######
+########       ########
+#######################
+
+
+Original baseline:
+iterations = 500
+num_workers = 5
+learning rate = 0.03
+
+Final accuracy for Synchronous is 95.7.
+Total time for Synchronous: 34.48029041290283 seconds
+
+===========================================================
+
+###########################################
+###  Changing Parameter Server Updates  ###
+###########################################
+
+1. Original - Sum + Mean:
+
+Final accuracy for Synchronous is 89.3.
+Total time for Synchronous: 34.288721799850464 seconds
+
+2. Original - SGD + Adam:
+
+Final accuracy for Synchronous is 95.6.
+Total time for Synchronous: 35.00963091850281 seconds
+
+3. Original - SGD + Adagrad:
+
+Final accuracy for Synchronous is 96.0.
+Total time for Synchronous: 35.51277995109558 seconds
+
+===========================================================
+
+################################
+###  Changing Learning Rate  ###
+################################
+
+1. Original - 0.03 + 0.01:
+
+Final accuracy for Synchronous is 92.6.
+Total time for Synchronous: 35.2835419178009 seconds
+
+===========================================================
+
+###########################################
+###  Changing Number of Worker Updates  ###
+###########################################
+
+1. Original - (5 worker updates) + (4 worker updates):
+
+Final accuracy for Synchronous is 95.1.
+Total time for Synchronous: 27.098950624465942 seconds
+
+===========================================================

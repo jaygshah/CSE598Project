@@ -1,0 +1,60 @@
+#######################
+########       ########
+######  Results  ######
+########       ########
+#######################
+
+
+Original baseline:
+iterations = 500
+num_workers = 5
+learning rate = 0.03
+
+Final accuracy for Aynchronous is 96.7.
+Total time for Asynchronous: 28.20123052597046 seconds
+
+===========================================================
+
+###########################################
+###  Changing Parameter Server Updates  ###
+###########################################
+
+1. Original - Sum + Mean:
+
+Final accuracy for Aynchronous is 94.1.
+Total time for Asynchronous: 28.35475206375122 seconds
+
+2. Original - SGD + Adam:
+
+Final accuracy for Aynchronous is 11.0.
+Total time for Asynchronous: 28.55953288078308 seconds
+
+3. Original - SGD + Adagrad:
+
+Final accuracy for Aynchronous is 96.7.
+Total time for Asynchronous: 27.603747606277466 seconds
+
+===========================================================
+
+################################
+###  Changing Learning Rate  ###
+################################
+
+1. Original - 0.03 + 0.01:
+
+Final accuracy for Aynchronous is 91.4.
+Total time for Asynchronous: 28.159756660461426 seconds
+
+
+===========================================================
+
+###########################################
+###  Changing Number of Worker Updates  ###
+###########################################
+
+1. Original - (1 worker updates) + (2 worker updates):
+
+Final accuracy for Asynchronous is 94.7.
+Total time for Asynchronous: 26.685887336730957 seconds
+
+===========================================================
