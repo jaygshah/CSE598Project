@@ -47,3 +47,14 @@ Total time for Asynchronous: 159.59600925445557 seconds
 
 
 ===========================================================
+
+###########################################
+###  Changing Number of Worker Updates  ###
+###########################################
+
+1. Original - (1 worker updates) + (2 worker updates):
+
+Final accuracy for Asynchronous is TODO.
+Total time for Asynchronous: TODO seconds
+
+===========================================================

@@ -57,3 +57,24 @@ Final accuracy for Synchronous is 95.1.
 Total time for Synchronous: 27.098950624465942 seconds
 
 ===========================================================
+
+#####################################
+###  Changing Gradient Staleness  ###
+#####################################
+
+1. Original - (average staleness 0) + (average staleness 4):
+
+Final accuracy for Synchronous is 12.1.
+Total time for Synchronous: 28.659014463424683 seconds
+
+2. Original - (average staleness 0) + (average staleness 2):
+
+Final accuracy for Synchronous is 10.6.
+Total time for Synchronous: 31.016631603240967 seconds
+
+3. Original - (average staleness 0) + (average staleness 1):
+
+Final accuracy for Synchronous is 87.2.
+Total time for Synchronous: 31.192102670669556 seconds
+
+===========================================================

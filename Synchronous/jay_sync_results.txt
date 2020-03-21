@@ -46,3 +46,35 @@ Final accuracy for Synchronous is 91.7.
 Total time for Synchronous: 192.04357504844666 seconds
 
 ===========================================================
+
+###########################################
+###  Changing Number of Worker Updates  ###
+###########################################
+
+1. Original - (5 worker updates) + (4 worker updates):
+
+Final accuracy for Synchronous is TODO.
+Total time for Synchronous: TODO seconds
+
+===========================================================
+
+#####################################
+###  Changing Gradient Staleness  ###
+#####################################
+
+1. Original - (average staleness 0) + (average staleness 4):
+
+Final accuracy for Synchronous is TODO.
+Total time for Synchronous: TODO seconds
+
+2. Original - (average staleness 0) + (average staleness 2):
+
+Final accuracy for Synchronous is TODO.
+Total time for Synchronous: TODO seconds
+
+3. Original - (average staleness 0) + (average staleness 1):
+
+Final accuracy for Synchronous is TODO.
+Total time for Synchronous: TODO seconds
+
+===========================================================
