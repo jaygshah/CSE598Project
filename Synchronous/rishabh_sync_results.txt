@@ -6,6 +6,7 @@
 
 
 Original baseline:
+sync_baseline.py
 iterations = 500
 num_workers = 5
 learning rate = 0.03
@@ -20,16 +21,19 @@ Total time for Synchronous: 34.48029041290283 seconds
 ###########################################
 
 1. Original - Sum + Mean:
+ps_update_rule/sync_sum2mean.py
 
 Final accuracy for Synchronous is 89.3.
 Total time for Synchronous: 34.288721799850464 seconds
 
 2. Original - SGD + Adam:
+ps_update_rule/sync_sgd2other.py
 
 Final accuracy for Synchronous is 95.6.
 Total time for Synchronous: 35.00963091850281 seconds
 
 3. Original - SGD + Adagrad:
+ps_update_rule/sync_sgd2other.py
 
 Final accuracy for Synchronous is 96.0.
 Total time for Synchronous: 35.51277995109558 seconds
@@ -41,6 +45,7 @@ Total time for Synchronous: 35.51277995109558 seconds
 ################################
 
 1. Original - 0.03 + 0.01:
+sync_baseline.py
 
 Final accuracy for Synchronous is 92.6.
 Total time for Synchronous: 35.2835419178009 seconds
@@ -52,6 +57,7 @@ Total time for Synchronous: 35.2835419178009 seconds
 ###########################################
 
 1. Original - (5 worker updates) + (4 worker updates):
+num_worker_update_rule/sync_4worker.py
 
 Final accuracy for Synchronous is 95.1.
 Total time for Synchronous: 27.098950624465942 seconds
@@ -63,16 +69,19 @@ Total time for Synchronous: 27.098950624465942 seconds
 #####################################
 
 1. Original - (average staleness 0) + (average staleness 4):
+gradient_staleness_rule/sync_avgstaleness4.py
 
 Final accuracy for Synchronous is 12.1.
 Total time for Synchronous: 28.659014463424683 seconds
 
 2. Original - (average staleness 0) + (average staleness 2):
+gradient_staleness_rule/sync_avgstaleness2.py
 
 Final accuracy for Synchronous is 10.6.
 Total time for Synchronous: 31.016631603240967 seconds
 
 3. Original - (average staleness 0) + (average staleness 1):
+gradient_staleness_rule/sync_avgstaleness1.py
 
 Final accuracy for Synchronous is 87.2.
 Total time for Synchronous: 31.192102670669556 seconds

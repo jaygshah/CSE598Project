@@ -6,6 +6,7 @@
 
 
 Original baseline:
+async_baseline.py
 iterations = 500
 num_workers = 5
 learning rate = 0.03
@@ -20,16 +21,19 @@ Total time for Asynchronous: 28.20123052597046 seconds
 ###########################################
 
 1. Original - Sum + Mean:
+ps_update_rule/async_sum2mean.py
 
 Final accuracy for Aynchronous is 94.1.
 Total time for Asynchronous: 28.35475206375122 seconds
 
 2. Original - SGD + Adam:
+ps_update_rule/async_sgd2other.py
 
 Final accuracy for Aynchronous is 11.0.
 Total time for Asynchronous: 28.55953288078308 seconds
 
 3. Original - SGD + Adagrad:
+ps_update_rule/async_sgd2other.py
 
 Final accuracy for Aynchronous is 96.7.
 Total time for Asynchronous: 27.603747606277466 seconds
@@ -41,6 +45,7 @@ Total time for Asynchronous: 27.603747606277466 seconds
 ################################
 
 1. Original - 0.03 + 0.01:
+async_baseline.py
 
 Final accuracy for Aynchronous is 91.4.
 Total time for Asynchronous: 28.159756660461426 seconds
@@ -53,6 +58,7 @@ Total time for Asynchronous: 28.159756660461426 seconds
 ###########################################
 
 1. Original - (1 worker updates) + (2 worker updates):
+num_worker_update_rule/async_2worker.py
 
 Final accuracy for Asynchronous is 94.7.
 Total time for Asynchronous: 26.685887336730957 seconds
