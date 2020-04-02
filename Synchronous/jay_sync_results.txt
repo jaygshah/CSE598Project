@@ -87,3 +87,21 @@ Final accuracy for Synchronous is TODO.
 Total time for Synchronous: TODO seconds
 
 ===========================================================
+
+#############################
+###  Changing Batch Size  ###
+#############################
+
+1. Original - (128 batch size) + (256 batch size):
+batch_size_update_rule/sync_256_batch_size.py
+
+Final accuracy for Synchronous is TODO.
+Total time for Synchronous: TODO seconds
+
+2. Original - (128 batch size) + (64 batch size):
+batch_size_update_rule/sync_64_batch_size.py
+
+Final accuracy for Synchronous is TODO.
+Total time for Synchronous: TODO seconds
+
+===========================================================

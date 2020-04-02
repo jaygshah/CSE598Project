@@ -64,3 +64,21 @@ Final accuracy for Asynchronous is 94.7.
 Total time for Asynchronous: 26.685887336730957 seconds
 
 ===========================================================
+
+#############################
+###  Changing Batch Size  ###
+#############################
+
+1. Original - (128 batch size) + (256 batch size):
+batch_size_update_rule/async_256_batch_size.py
+
+Final accuracy for Asynchronous is 94.1.
+Total time for Asynchronous: 54.927435636520386 seconds
+
+2. Original - (128 batch size) + (64 batch size):
+batch_size_update_rule/async_64_batch_size.py
+
+Final accuracy for Asynchronous is 95.9.
+Total time for Asynchronous: 20.915790557861328 seconds
+
+===========================================================
