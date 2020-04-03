@@ -65,6 +65,30 @@ Total time for Asynchronous: 26.685887336730957 seconds
 
 ===========================================================
 
+###############################################
+###  Changing Gradient Staleness Tolerance  ###
+###############################################
+
+1. Original - (infinite push tolerance) + (1 push tolerance):
+stale_gradients_tolerance_rule/async_staleness1.py
+
+Final accuracy for Asynchronous is 93.6.
+Total time for Asynchronous: 26.682492971420288 seconds
+
+2. Original - (infinite push tolerance) + (10 push tolerance):
+stale_gradients_tolerance_rule/async_staleness10.py
+
+Final accuracy for Asynchronous is 95.3.
+Total time for Asynchronous: 26.480746507644653 seconds
+
+3. Original - (infinite push tolerance) + (100 push tolerance):
+stale_gradients_tolerance_rule/async_staleness100.py
+
+Final accuracy for Asynchronous is 95.8.
+Total time for Asynchronous: 26.581790447235107 seconds
+
+===========================================================
+
 #############################
 ###  Changing Batch Size  ###
 #############################
