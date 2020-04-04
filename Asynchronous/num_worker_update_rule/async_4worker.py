@@ -138,7 +138,7 @@ workers = [DataWorker.remote() for i in range(num_workers)]
 model = ConvNet()
 test_loader = get_data_loader()[1]
 
-print("Running synchronous Parameter Server Training.")
+print("Running Asynchronous Parameter Server Training.")
 print("===============================================")
 
 current_weights = ps.get_weights.remote()
@@ -176,5 +176,5 @@ for i in range((iterations * num_workers) // 4):
         accuracy = evaluate(model, test_loader)
         print("Iter {}: \taccuracy is {:.1f}".format(i, accuracy))
 
-print("Final accuracy for Synchronous is {:.1f}.".format(accuracy))
-print('Total time for Synchronous: {0} seconds'.format(time.time() - start_time_2))
+print("Final accuracy for Asynchronous is {:.1f}.".format(accuracy))
+print('Total time for Asynchronous: {0} seconds'.format(time.time() - start_time_2))
