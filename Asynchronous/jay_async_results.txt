@@ -112,3 +112,21 @@ Final accuracy for Asynchronous is TODO.
 Total time for Asynchronous: TODO seconds
 
 ===========================================================
+
+####################################
+###  Changing Number of Workers  ###
+####################################
+
+1. Original - (5 workers) + (2 workers):
+num_workers_rule/async_2workers.py
+
+Final accuracy for Asynchronous is TODO.
+Total time for Asynchronous: TODO seconds
+
+2. Original - (5 workers) + (8 workers):
+num_workers_rule/async_8workers.py
+
+Final accuracy for Asynchronous is TODO.
+Total time for Asynchronous: TODO seconds
+
+===========================================================

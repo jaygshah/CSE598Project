@@ -93,3 +93,21 @@ Final accuracy for Synchronous is TODO.
 Total time for Synchronous: TODO seconds
 
 ===========================================================
+
+####################################
+###  Changing Number of Workers  ###
+####################################
+
+1. Original - (5 workers) + (2 workers):
+num_workers_rule/sync_2workers.py
+
+Final accuracy for Synchronous is TODO.
+Total time for Synchronous: TODO seconds
+
+2. Original - (5 workers) + (8 workers):
+num_workers_rule/sync_8workers.py
+
+Final accuracy for Synchronous is TODO.
+Total time for Synchronous: TODO seconds
+
+===========================================================
