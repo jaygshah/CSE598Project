@@ -52,18 +52,6 @@ Total time for Synchronous: 35.2835419178009 seconds
 
 ===========================================================
 
-###########################################
-###  Changing Number of Worker Updates  ###
-###########################################
-
-1. Original - (5 worker updates) + (4 worker updates):
-num_worker_update_rule/sync_4worker.py
-
-Final accuracy for Synchronous is 95.1.
-Total time for Synchronous: 27.098950624465942 seconds
-
-===========================================================
-
 #####################################
 ###  Changing Gradient Staleness  ###
 #####################################
@@ -103,5 +91,23 @@ batch_size_update_rule/sync_64_batch_size.py
 
 Final accuracy for Synchronous is 94.3.
 Total time for Synchronous: 25.648558616638184 seconds
+
+===========================================================
+
+####################################
+###  Changing Number of Workers  ###
+####################################
+
+1. Original - (5 workers) + (2 workers):
+num_workers_rule/sync_2workers.py
+
+Final accuracy for Synchronous is 92.0.
+Total time for Synchronous: 24.228224515914917 seconds
+
+2. Original - (5 workers) + (8 workers):
+num_workers_rule/sync_8workers.py
+
+Final accuracy for Synchronous is 97.4.
+Total time for Synchronous: 44.58061075210571 seconds
 
 ===========================================================

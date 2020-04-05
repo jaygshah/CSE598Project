@@ -63,6 +63,12 @@ num_worker_update_rule/async_2worker.py
 Final accuracy for Asynchronous is 94.7.
 Total time for Asynchronous: 26.685887336730957 seconds
 
+2. Original - (5 worker updates) + (4 worker updates):
+num_worker_update_rule/async_4worker.py
+
+Final accuracy for Synchronous is 95.1.
+Total time for Synchronous: 27.098950624465942 seconds
+
 ===========================================================
 
 ###############################################
@@ -104,5 +110,23 @@ batch_size_update_rule/async_64_batch_size.py
 
 Final accuracy for Asynchronous is 95.9.
 Total time for Asynchronous: 20.915790557861328 seconds
+
+===========================================================
+
+####################################
+###  Changing Number of Workers  ###
+####################################
+
+1. Original - (5 workers) + (2 workers):
+num_workers_rule/async_2workers.py
+
+Final accuracy for Asynchronous is 92.5.
+Total time for Asynchronous: 16.44580364227295 seconds
+
+2. Original - (5 workers) + (8 workers):
+num_workers_rule/async_8workers.py
+
+Final accuracy for Asynchronous is 96.8.
+Total time for Asynchronous: 51.10702037811279 seconds
 
 ===========================================================

@@ -63,6 +63,12 @@ num_worker_update_rule/async_2worker.py
 Final accuracy for Asynchronous is TODO.
 Total time for Asynchronous: TODO seconds
 
+2. Original - (5 worker updates) + (4 worker updates):
+num_worker_update_rule/async_4worker.py
+
+Final accuracy for Synchronous is TODO.
+Total time for Synchronous: TODO seconds
+
 ===========================================================
 
 ###############################################
@@ -101,6 +107,24 @@ Total time for Asynchronous: TODO seconds
 
 2. Original - (128 batch size) + (64 batch size):
 batch_size_update_rule/async_64_batch_size.py
+
+Final accuracy for Asynchronous is TODO.
+Total time for Asynchronous: TODO seconds
+
+===========================================================
+
+####################################
+###  Changing Number of Workers  ###
+####################################
+
+1. Original - (5 workers) + (2 workers):
+num_workers_rule/async_2workers.py
+
+Final accuracy for Asynchronous is TODO.
+Total time for Asynchronous: TODO seconds
+
+2. Original - (5 workers) + (8 workers):
+num_workers_rule/async_8workers.py
 
 Final accuracy for Asynchronous is TODO.
 Total time for Asynchronous: TODO seconds

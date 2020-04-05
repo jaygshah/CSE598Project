@@ -52,18 +52,6 @@ Total time for Synchronous: 192.04357504844666 seconds
 
 ===========================================================
 
-###########################################
-###  Changing Number of Worker Updates  ###
-###########################################
-
-1. Original - (5 worker updates) + (4 worker updates):
-num_worker_update_rule/sync_4worker.py
-
-Final accuracy for Synchronous is TODO.
-Total time for Synchronous: TODO seconds
-
-===========================================================
-
 #####################################
 ###  Changing Gradient Staleness  ###
 #####################################
@@ -100,6 +88,24 @@ Total time for Synchronous: TODO seconds
 
 2. Original - (128 batch size) + (64 batch size):
 batch_size_update_rule/sync_64_batch_size.py
+
+Final accuracy for Synchronous is TODO.
+Total time for Synchronous: TODO seconds
+
+===========================================================
+
+####################################
+###  Changing Number of Workers  ###
+####################################
+
+1. Original - (5 workers) + (2 workers):
+num_workers_rule/sync_2workers.py
+
+Final accuracy for Synchronous is TODO.
+Total time for Synchronous: TODO seconds
+
+2. Original - (5 workers) + (8 workers):
+num_workers_rule/sync_8workers.py
 
 Final accuracy for Synchronous is TODO.
 Total time for Synchronous: TODO seconds

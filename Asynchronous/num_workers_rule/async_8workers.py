@@ -129,7 +129,7 @@ class DataWorker(object):
 
 
 iterations = 500
-num_workers = 5
+num_workers = 8
 
 ray.init(ignore_reinit_error=True)
 ps = ParameterServer.remote(0.03)
@@ -138,7 +138,7 @@ workers = [DataWorker.remote() for i in range(num_workers)]
 model = ConvNet()
 test_loader = get_data_loader()[1]
 
-print("Running synchronous Parameter Server Training.")
+print("Running Asynchronous Parameter Server Training.")
 print("===============================================")
 
 current_weights = ps.get_weights.remote()
@@ -149,26 +149,14 @@ for worker in workers:
 
 start_time_2 = time.time()
 
-for i in range((iterations * num_workers) // 4):
-    ready_gradient_list = []
-    ready_gradient_list, _ = ray.wait(list(gradients), num_returns=4)
-    ready_gradient_id1 = ready_gradient_list[0]
-    ready_gradient_id2 = ready_gradient_list[1]
-    ready_gradient_id3 = ready_gradient_list[2]
-    ready_gradient_id4 = ready_gradient_list[3]
-    worker1 = gradients.pop(ready_gradient_id1)
-    worker2 = gradients.pop(ready_gradient_id2)
-    worker3 = gradients.pop(ready_gradient_id3)
-    worker4 = gradients.pop(ready_gradient_id4)
+for i in range(iterations * num_workers):
+    ready_gradient_list, _ = ray.wait(list(gradients))
+    ready_gradient_id = ready_gradient_list[0]
+    worker = gradients.pop(ready_gradient_id)
 
     # Compute and apply gradients.
-    current_weights = ps.apply_gradients.remote(
-        *[ready_gradient_id1, ready_gradient_id2, ready_gradient_id3,
-        ready_gradient_id4])
-    gradients[worker1.compute_gradients.remote(current_weights)] = worker1
-    gradients[worker2.compute_gradients.remote(current_weights)] = worker2
-    gradients[worker3.compute_gradients.remote(current_weights)] = worker3
-    gradients[worker4.compute_gradients.remote(current_weights)] = worker4
+    current_weights = ps.apply_gradients.remote(*[ready_gradient_id])
+    gradients[worker.compute_gradients.remote(current_weights)] = worker
 
     if i % 100 == 0:
         # Evaluate the current model after every 100 updates.
@@ -176,5 +164,5 @@ for i in range((iterations * num_workers) // 4):
         accuracy = evaluate(model, test_loader)
         print("Iter {}: \taccuracy is {:.1f}".format(i, accuracy))
 
-print("Final accuracy for Synchronous is {:.1f}.".format(accuracy))
-print('Total time for Synchronous: {0} seconds'.format(time.time() - start_time_2))
+print("Final accuracy for Aynchronous is {:.1f}.".format(accuracy))
+print('Total time for Asynchronous: {0} seconds'.format(time.time() - start_time_2))
