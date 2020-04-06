@@ -2,6 +2,7 @@ import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision
 from torchvision import datasets, transforms
 from filelock import FileLock
 import numpy as np
@@ -12,9 +13,37 @@ import ray
 
 def get_data_loader():
     """Safely downloads data. Returns training/validation set dataloader."""
-    transform = transforms.Compose(
-    [transforms.ToTensor(),
-    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+    transform_train = transforms.Compose([
+    transforms.RandomCrop(32, padding=4),
+    transforms.RandomHorizontalFlip(),
+    transforms.ToTensor(),
+    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+])
+
+    # Normalize the test set same as training set without augmentation
+    transform_test = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+    ])
+
+    # trainset = torchvision.datasets.CIFAR10(
+    #     "~/data", train=True, download=True, transform=transform_train)
+    # trainloader = torch.utils.data.DataLoader(
+    #     trainset, batch_size=128, shuffle=True, num_workers=2)
+
+    # testset = torchvision.datasets.CIFAR10(
+    #     "~/data", train=False, download=True, transform=transform_test)
+    # testloader = torch.utils.data.DataLoader(
+    #     testset, batch_size=128, shuffle=False, num_workers=2)
+
+    # return trainset, testset
+
+# Normalize the test set same as training set without augmentation
+# transform_test = transforms.Compose([
+#     transforms.ToTensor(),
+#     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+# ])
+
     # We add FileLock here because multiple workers will want to
     # download data, and this may cause overwrites since
     # DataLoader is not threadsafe.
@@ -24,12 +53,12 @@ def get_data_loader():
                 "~/data",
                 train=True,
                 download=True,
-                transform=transform),
-            batch_size=256,
+                transform=transform_train),
+            batch_size=128,
             shuffle=True)
         test_loader = torch.utils.data.DataLoader(
-            datasets.CIFAR10("~/data", train=False, transform=transform),
-            batch_size=256,
+            datasets.CIFAR10("~/data", train=False, transform=transform_test),
+            batch_size=128,
             shuffle=True)
     return train_loader, test_loader
 
@@ -54,67 +83,126 @@ def evaluate(model, test_loader):
 class ConvNet(nn.Module):
     """Small ConvNet for MNIST."""
 
-    def __init__(self):
-        super(ConvNet, self).__init__()
-        # self.conv1 = nn.Conv2d(3, 3, kernel_size=3)
-        # self.fc = nn.Linear(300, 128)
+    # def __init__(self):
+    #     super(ConvNet, self).__init__()
+    #     # self.conv1 = nn.Conv2d(3, 3, kernel_size=3)
+    #     # self.fc = nn.Linear(300, 128)
 
-        self.conv1 = nn.Conv2d(3, 6, 5)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)
+    #     self.conv1 = nn.Conv2d(3, 6, 5)
+    #     self.pool = nn.MaxPool2d(2, 2)
+    #     self.conv2 = nn.Conv2d(6, 16, 5)
+    #     self.fc1 = nn.Linear(16 * 5 * 5, 120)
+    #     self.fc2 = nn.Linear(120, 84)
+    #     self.fc3 = nn.Linear(84, 10)
 
-        # self.conv1 = nn.Conv2d(
-        #     in_channels=in_channels, out_channels=out_channels,
-        #     kernel_size=(3, 3), stride=stride, padding=1, bias=False
-        # )
-        # self.bn1 = nn.BatchNorm2d(out_channels)
+    #     # self.conv1 = nn.Conv2d(
+    #     #     in_channels=in_channels, out_channels=out_channels,
+    #     #     kernel_size=(3, 3), stride=stride, padding=1, bias=False
+    #     # )
+    #     # self.bn1 = nn.BatchNorm2d(out_channels)
         
-        # # Conv Layer 2
-        # self.conv2 = nn.Conv2d(
-        #     in_channels=out_channels, out_channels=out_channels,
-        #     kernel_size=(3, 3), stride=1, padding=1, bias=False
-        # )
-        # self.bn2 = nn.BatchNorm2d(out_channels)
+    #     # # Conv Layer 2
+    #     # self.conv2 = nn.Conv2d(
+    #     #     in_channels=out_channels, out_channels=out_channels,
+    #     #     kernel_size=(3, 3), stride=1, padding=1, bias=False
+    #     # )
+    #     # self.bn2 = nn.BatchNorm2d(out_channels)
     
-        # # Shortcut connection to downsample residual
-        # # In case the output dimensions of the residual block is not the same 
-        # # as it's input, have a convolutional layer downsample the layer 
-        # # being bought forward by approporate striding and filters
-        # self.shortcut = nn.Sequential()
-        # if stride != 1 or in_channels != out_channels:
-        #     self.shortcut = nn.Sequential(
-        #         nn.Conv2d(
-        #             in_channels=in_channels, out_channels=out_channels,
-        #             kernel_size=(1, 1), stride=stride, bias=False
-        #         ),
-        #         nn.BatchNorm2d(out_channels)
-        #     )
+    #     # # Shortcut connection to downsample residual
+    #     # # In case the output dimensions of the residual block is not the same 
+    #     # # as it's input, have a convolutional layer downsample the layer 
+    #     # # being bought forward by approporate striding and filters
+    #     # self.shortcut = nn.Sequential()
+    #     # if stride != 1 or in_channels != out_channels:
+    #     #     self.shortcut = nn.Sequential(
+    #     #         nn.Conv2d(
+    #     #             in_channels=in_channels, out_channels=out_channels,
+    #     #             kernel_size=(1, 1), stride=stride, bias=False
+    #     #         ),
+    #     #         nn.BatchNorm2d(out_channels)
+    #     #     )
+
+    # def forward(self, x):
+    #     # x = F.relu(F.max_pool2d(self.conv1(x), 3))
+    #     # print(x.shape)
+    #     # x = x.view(-1, 128)
+    #     # x = self.fc(x)
+
+    #     # return F.log_softmax(x, dim=1)
+
+    #     x = self.pool(F.relu(self.conv1(x)))
+    #     x = self.pool(F.relu(self.conv2(x)))
+    #     x = x.view(-1, 16 * 5 * 5)
+    #     x = F.relu(self.fc1(x))
+    #     x = F.relu(self.fc2(x))
+    #     x = self.fc3(x)
+
+    #     return x
+
+    #     # out = nn.ReLU()(self.bn1(self.conv1(x)))
+    #     # out = self.bn2(self.conv2(out))
+    #     # out += self.shortcut(x)
+    #     # out = nn.ReLU()(out)
+    #     # return out
+
+
+    def __init__(self):
+        """CNN Builder."""
+        super(ConvNet, self).__init__()
+
+        self.conv_layer = nn.Sequential(
+
+            # Conv Layer block 1
+            nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, padding=1),
+            nn.BatchNorm2d(32),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            # Conv Layer block 2
+            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Dropout2d(p=0.05),
+
+            # Conv Layer block 3
+            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=3, padding=1),
+            nn.BatchNorm2d(256),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(in_channels=256, out_channels=256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+        )
+
+
+        self.fc_layer = nn.Sequential(
+            nn.Dropout(p=0.1),
+            nn.Linear(4096, 1024),
+            nn.ReLU(inplace=True),
+            nn.Linear(1024, 512),
+            nn.ReLU(inplace=True),
+            nn.Dropout(p=0.1),
+            nn.Linear(512, 10)
+        )
+
 
     def forward(self, x):
-        # x = F.relu(F.max_pool2d(self.conv1(x), 3))
-        # print(x.shape)
-        # x = x.view(-1, 128)
-        # x = self.fc(x)
-
-        # return F.log_softmax(x, dim=1)
-
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, 16 * 5 * 5)
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)
+        """Perform forward."""
+        
+        # conv layers
+        x = self.conv_layer(x)
+        
+        # flatten
+        x = x.view(x.size(0), -1)
+        
+        # fc layer
+        x = self.fc_layer(x)
 
         return x
-
-        # out = nn.ReLU()(self.bn1(self.conv1(x)))
-        # out = self.bn2(self.conv2(out))
-        # out += self.shortcut(x)
-        # out = nn.ReLU()(out)
-        # return out
 
         
 
