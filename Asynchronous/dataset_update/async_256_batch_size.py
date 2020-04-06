@@ -14,7 +14,7 @@ def get_data_loader():
     """Safely downloads data. Returns training/validation set dataloader."""
     transform = transforms.Compose(
     [transforms.ToTensor(),
-     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     # We add FileLock here because multiple workers will want to
     # download data, and this may cause overwrites since
     # DataLoader is not threadsafe.
@@ -58,6 +58,7 @@ class ConvNet(nn.Module):
         super(ConvNet, self).__init__()
         # self.conv1 = nn.Conv2d(3, 3, kernel_size=3)
         # self.fc = nn.Linear(300, 128)
+
         self.conv1 = nn.Conv2d(3, 6, 5)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(6, 16, 5)
@@ -65,11 +66,40 @@ class ConvNet(nn.Module):
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 10)
 
+        # self.conv1 = nn.Conv2d(
+        #     in_channels=in_channels, out_channels=out_channels,
+        #     kernel_size=(3, 3), stride=stride, padding=1, bias=False
+        # )
+        # self.bn1 = nn.BatchNorm2d(out_channels)
+        
+        # # Conv Layer 2
+        # self.conv2 = nn.Conv2d(
+        #     in_channels=out_channels, out_channels=out_channels,
+        #     kernel_size=(3, 3), stride=1, padding=1, bias=False
+        # )
+        # self.bn2 = nn.BatchNorm2d(out_channels)
+    
+        # # Shortcut connection to downsample residual
+        # # In case the output dimensions of the residual block is not the same 
+        # # as it's input, have a convolutional layer downsample the layer 
+        # # being bought forward by approporate striding and filters
+        # self.shortcut = nn.Sequential()
+        # if stride != 1 or in_channels != out_channels:
+        #     self.shortcut = nn.Sequential(
+        #         nn.Conv2d(
+        #             in_channels=in_channels, out_channels=out_channels,
+        #             kernel_size=(1, 1), stride=stride, bias=False
+        #         ),
+        #         nn.BatchNorm2d(out_channels)
+        #     )
+
     def forward(self, x):
         # x = F.relu(F.max_pool2d(self.conv1(x), 3))
         # print(x.shape)
         # x = x.view(-1, 128)
         # x = self.fc(x)
+
+        # return F.log_softmax(x, dim=1)
 
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
@@ -80,7 +110,13 @@ class ConvNet(nn.Module):
 
         return x
 
-        # return F.log_softmax(x, dim=1)
+        # out = nn.ReLU()(self.bn1(self.conv1(x)))
+        # out = self.bn2(self.conv2(out))
+        # out += self.shortcut(x)
+        # out = nn.ReLU()(out)
+        # return out
+
+        
 
     def get_weights(self):
         return {k: v.cpu() for k, v in self.state_dict().items()}
