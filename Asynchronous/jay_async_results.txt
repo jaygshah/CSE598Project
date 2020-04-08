@@ -63,11 +63,11 @@ num_workers_ps_update_rule/async_2workers_ps_update.py
 Final accuracy for Asynchronous is TODO.
 Total time for Asynchronous: TODO seconds
 
-2. Original - (5 worker updates) + (4 worker updates):
+2. Original - (1 worker updates) + (4 worker updates):
 num_workers_ps_update_rule/async_4workers_ps_update.py
 
-Final accuracy for Synchronous is TODO.
-Total time for Synchronous: TODO seconds
+Final accuracy for Asynchronous is TODO.
+Total time for Asynchronous: TODO seconds
 
 ===========================================================
 
