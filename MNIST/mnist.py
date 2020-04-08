@@ -145,9 +145,9 @@ class DataWorker(object):
 # Get user inputs
 batch_size = int(input('Enter batch size [default=128]:') or 128)
 num_workers = int(input('Enter number of workers [default=5]:') or 5)
-num_workers_ps_update = int(input('Enter number of workers to update PS [default=1]:') or 1)
+num_workers_ps_update = int(input('Enter number of workers to update PS. async_baseline=1, sync_baseline=5 [default=1]:') or 1)
 lr = float(input('Enter learning rate [default=0.03]:') or 0.03)
-stale_threshold = int(input('Enter gradient staleness threshold [default=9999]:') or 9999)
+stale_tolerance = int(input('Enter gradient staleness tolerance. async_baseline=9999, sync_baseline=0 [default=9999]:') or 9999)
 ps_grad_rule = input('Enter PS gradient rule (sum/mean) [default=sum]:') or 'sum'
 ps_update_rule = input('Enter PS update rule (sgd/adam/adagrad) [default=sgd]:') or 'sgd'
 
@@ -160,7 +160,7 @@ workers = [DataWorker.remote(batch_size) for i in range(num_workers)]
 model = ConvNet()
 test_loader = get_data_loader(batch_size)[1]
 
-print("Running Asynchronous Parameter Server Training.")
+print("Running Parameter Server Training.")
 print("===============================================")
 
 current_weights = ps.get_weights.remote()
@@ -185,7 +185,7 @@ for i in range(total_iterations):
             worker = gradients[gradient_id]
             worker_updates = num_worker_updates[worker]
             gradients.pop(gradient_id)
-            if worker_updates - min_worker_updates < stale_threshold:
+            if worker_updates - min_worker_updates <= stale_tolerance:
                 used_gradients[gradient_id] = worker
             else:
                 unusable_gradients[gradient_id] = worker
@@ -205,5 +205,5 @@ for i in range(total_iterations):
         accuracy = evaluate(model, test_loader)
         print("Iter {}: \taccuracy is {:.1f}".format(i, accuracy))
 
-print("Final accuracy for Aynchronous is {:.1f}.".format(accuracy))
-print('Total time for Asynchronous: {0} seconds'.format(time.time() - start_time_2))
+print("Final accuracy is {:.1f}.".format(accuracy))
+print('Total time : {0} seconds'.format(time.time() - start_time_2))
