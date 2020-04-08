@@ -53,18 +53,18 @@ Total time for Asynchronous: 28.159756660461426 seconds
 
 ===========================================================
 
-###########################################
-###  Changing Number of Worker Updates  ###
-###########################################
+###############################################################
+###  Changing Number of Workers to Update Parameter Server  ###
+###############################################################
 
 1. Original - (1 worker updates) + (2 worker updates):
-num_worker_update_rule/async_2worker.py
+num_workers_ps_update_rule/async_2workers_ps_update.py
 
 Final accuracy for Asynchronous is 94.7.
 Total time for Asynchronous: 26.685887336730957 seconds
 
 2. Original - (5 worker updates) + (4 worker updates):
-num_worker_update_rule/async_4worker.py
+num_workers_ps_update_rule/async_4workers_ps_update.py
 
 Final accuracy for Synchronous is 95.1.
 Total time for Synchronous: 27.098950624465942 seconds
