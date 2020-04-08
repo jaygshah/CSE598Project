@@ -24,12 +24,16 @@ def get_data_loader():
                 train=True,
                 download=True,
                 transform=transform),
-            batch_size=64,
-            shuffle=True)
+                batch_size=128,
+                shuffle=True)
         test_loader = torch.utils.data.DataLoader(
-            datasets.FashionMNIST("~/data", train=False, transform=transform),
-            batch_size=64,
-            shuffle=True)
+            datasets.FashionMNIST(
+                "~/data", 
+                train=False, 
+                download=True,
+                transform=transform),
+                batch_size=128,
+                shuffle=True)
     return train_loader, test_loader
 
 
