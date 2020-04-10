@@ -125,6 +125,7 @@ class DataWorker(object):
     def __init__(self):
         self.model = ConvNet()
         self.data_iterator = iter(get_data_loader()[0])
+        self.criterion = nn.CrossEntropyLoss()
 
     def compute_gradients(self, weights):
         self.model.set_weights(weights)
@@ -135,7 +136,7 @@ class DataWorker(object):
             data, target = next(self.data_iterator)
         self.model.zero_grad()
         output = self.model(data)
-        loss = F.nll_loss(output, target)
+        loss = self.criterion(output, target)
         loss.backward()
         return self.model.get_gradients()
 
