@@ -169,6 +169,7 @@ gradients = {}
 for worker in workers:
     gradients[worker.compute_gradients.remote(current_weights)] = worker
 total_iterations = (iterations * num_workers) // num_workers_ps_update
+num_evals = 0
 
 start_time_2 = time.time()
 
@@ -203,7 +204,8 @@ for i in range(total_iterations):
         # during training.
         model.set_weights(ray.get(current_weights))
         accuracy = evaluate(model, test_loader)
-        print("Iter {}: \taccuracy is {:.1f}".format(i, accuracy))
+        num_evals += 1
+        print("Iter {}, Eval {}: \taccuracy is {:.1f}".format(i, num_evals, accuracy))
 
 print("Final accuracy is {:.1f}.".format(accuracy))
 print('Total time : {0} seconds'.format(time.time() - start_time_2))
