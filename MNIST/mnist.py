@@ -153,59 +153,71 @@ ps_update_rule = input('Enter PS update rule (sgd/adam/adagrad) [default=sgd]:')
 
 iterations = 500
 
-ray.init(ignore_reinit_error=True)
-ps = ParameterServer.remote(lr, ps_grad_rule, ps_update_rule)
-workers = [DataWorker.remote(batch_size) for i in range(num_workers)]
+accuracy_runs = []
+time_runs = []
 
-model = ConvNet()
-test_loader = get_data_loader(batch_size)[1]
+for run in range(10):
+    ray.init(ignore_reinit_error=True)
+    ps = ParameterServer.remote(lr, ps_grad_rule, ps_update_rule)
+    workers = [DataWorker.remote(batch_size) for i in range(num_workers)]
 
-print("Running Parameter Server Training.")
-print("===============================================")
+    model = ConvNet()
+    test_loader = get_data_loader(batch_size)[1]
 
-current_weights = ps.get_weights.remote()
-num_worker_updates = {worker: 0 for worker in workers}
-gradients = {}
-for worker in workers:
-    gradients[worker.compute_gradients.remote(current_weights)] = worker
-total_iterations = (iterations * num_workers) // num_workers_ps_update
-num_evals = 0
+    print("Running Parameter Server Training.")
+    print("===============================================")
 
-start_time_2 = time.time()
-
-for i in range(total_iterations):
-    # Find the specified number of workers with computed gradients
-    min_worker_updates = min(num_worker_updates.values())
-    unusable_gradients = {}
-    used_gradients = {}
-    while len(used_gradients) < num_workers_ps_update:
-        ready_gradient_list, _ = ray.wait(list(gradients))
-        for gradient_id in ready_gradient_list:
-            if len(used_gradients) == num_workers_ps_update:
-                break
-            worker = gradients[gradient_id]
-            worker_updates = num_worker_updates[worker]
-            gradients.pop(gradient_id)
-            if worker_updates - min_worker_updates <= stale_tolerance:
-                used_gradients[gradient_id] = worker
-            else:
-                unusable_gradients[gradient_id] = worker
-    for gradient_id, worker in unusable_gradients.items():
-        gradients[gradient_id] = worker
-
-    # Compute and apply gradients.
-    current_weights = ps.apply_gradients.remote(*used_gradients.keys())
-    for worker in used_gradients.values():
+    current_weights = ps.get_weights.remote()
+    num_worker_updates = {worker: 0 for worker in workers}
+    gradients = {}
+    for worker in workers:
         gradients[worker.compute_gradients.remote(current_weights)] = worker
-        num_worker_updates[worker] += 1
+    total_iterations = (iterations * num_workers) // num_workers_ps_update
+    num_evals = 0
 
-    if i % (total_iterations / 50) < 1:
-        # Evaluate the current model. Evaluation occurs for a total of 50 times
-        # during training.
-        model.set_weights(ray.get(current_weights))
-        accuracy = evaluate(model, test_loader)
-        num_evals += 1
-        print("Iter {}, Eval {}: \taccuracy is {:.1f}".format(i, num_evals, accuracy))
+    start_time_2 = time.time()
 
-print("Final accuracy is {:.1f}.".format(accuracy))
-print('Total time : {0} seconds'.format(time.time() - start_time_2))
+    for i in range(total_iterations):
+        # Find the specified number of workers with computed gradients
+        min_worker_updates = min(num_worker_updates.values())
+        unusable_gradients = {}
+        used_gradients = {}
+        while len(used_gradients) < num_workers_ps_update:
+            ready_gradient_list, _ = ray.wait(list(gradients))
+            for gradient_id in ready_gradient_list:
+                if len(used_gradients) == num_workers_ps_update:
+                    break
+                worker = gradients[gradient_id]
+                worker_updates = num_worker_updates[worker]
+                gradients.pop(gradient_id)
+                if worker_updates - min_worker_updates <= stale_tolerance:
+                    used_gradients[gradient_id] = worker
+                else:
+                    unusable_gradients[gradient_id] = worker
+        for gradient_id, worker in unusable_gradients.items():
+            gradients[gradient_id] = worker
+
+        # Compute and apply gradients.
+        current_weights = ps.apply_gradients.remote(*used_gradients.keys())
+        for worker in used_gradients.values():
+            gradients[worker.compute_gradients.remote(current_weights)] = worker
+            num_worker_updates[worker] += 1
+
+        if i % (total_iterations / 50) < 1:
+            # Evaluate the current model. Evaluation occurs for a total of 50 times
+            # during training.
+            model.set_weights(ray.get(current_weights))
+            accuracy = evaluate(model, test_loader)
+            num_evals += 1
+            print("Iter {}, Eval {}: \taccuracy is {:.1f}".format(i, num_evals, accuracy))
+
+    elapsed_time = time.time() - start_time_2
+    print("Final accuracy is {:.1f}.".format(accuracy))
+    print('Total time : {0} seconds'.format(elapsed_time))
+    accuracy_runs.append(accuracy)
+    time_runs.append(elapsed_time)
+    ray.shutdown()
+
+print()
+print(f"Average accuracy of 10 runs: {sum(accuracy_runs) / 10}")
+print(f"Average elapsed time of 10 runs: {sum(time_runs) / 10}")
