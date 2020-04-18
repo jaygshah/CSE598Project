@@ -2,6 +2,7 @@ import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision
 from torchvision import datasets, transforms
 from filelock import FileLock
 import numpy as np
@@ -12,26 +13,40 @@ import ray
 
 def get_data_loader(batch_size):
     """Safely downloads data. Returns training/validation set dataloader."""
-    mnist_transforms = transforms.Compose(
-        [transforms.ToTensor(),
-         transforms.Normalize((0.1307, ), (0.3081, ))])
+    transform_train = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+    ])
+
+    # Normalize the test set same as training set without augmentation
+    transform_test = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+    ])
 
     # We add FileLock here because multiple workers will want to
     # download data, and this may cause overwrites since
     # DataLoader is not threadsafe.
     with FileLock(os.path.expanduser("~/data.lock")):
         train_loader = torch.utils.data.DataLoader(
-            datasets.MNIST(
+            datasets.CIFAR10(
                 "~/data",
                 train=True,
                 download=True,
-                transform=mnist_transforms),
+                transform=transform_train
+            ),
             batch_size=batch_size,
-            shuffle=True)
+            shuffle=True
+        )
         test_loader = torch.utils.data.DataLoader(
-            datasets.MNIST("~/data", train=False, transform=mnist_transforms),
+            datasets.CIFAR10(
+                "~/data",
+                train=False,
+                transform=transform_test
+            ),
             batch_size=batch_size,
-            shuffle=True)
+            shuffle=True
+        )
     return train_loader, test_loader
 
 
@@ -56,15 +71,24 @@ class ConvNet(nn.Module):
     """Small ConvNet for MNIST."""
 
     def __init__(self):
+        """CNN Builder."""
         super(ConvNet, self).__init__()
-        self.conv1 = nn.Conv2d(1, 3, kernel_size=3)
-        self.fc = nn.Linear(192, 10)
+        self.conv1 = nn.Conv2d(3, 6, 5)
+        self.pool = nn.MaxPool2d(2, 2)
+        self.conv2 = nn.Conv2d(6, 16, 5)
+        self.fc1 = nn.Linear(16 * 5 * 5, 120)
+        self.fc2 = nn.Linear(120, 84)
+        self.fc3 = nn.Linear(84, 10)
 
     def forward(self, x):
-        x = F.relu(F.max_pool2d(self.conv1(x), 3))
-        x = x.view(-1, 192)
-        x = self.fc(x)
-        return F.log_softmax(x, dim=1)
+        """Perform forward."""
+        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
+        x = x.view(-1, 16 * 5 * 5)
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x
 
     def get_weights(self):
         return {k: v.cpu() for k, v in self.state_dict().items()}
@@ -127,6 +151,7 @@ class DataWorker(object):
         self.model = ConvNet()
         self.batch_size = batch_size
         self.data_iterator = iter(get_data_loader(self.batch_size)[0])
+        self.criterion = nn.CrossEntropyLoss()
 
     def compute_gradients(self, weights):
         self.model.set_weights(weights)
@@ -137,7 +162,7 @@ class DataWorker(object):
             data, target = next(self.data_iterator)
         self.model.zero_grad()
         output = self.model(data)
-        loss = F.nll_loss(output, target)
+        loss = self.criterion(output, target)
         loss.backward()
         return self.model.get_gradients()
 
