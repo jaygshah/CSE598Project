@@ -163,7 +163,7 @@ lr = float(input('Enter learning rate [default=0.03]:') or 0.03)
 stale_tolerance = int(input('Enter gradient staleness tolerance. async_baseline=9999, sync_baseline=0 [default=9999]:') or 9999)
 ps_grad_rule = input('Enter PS gradient rule (sum/mean) [default=sum]:') or 'sum'
 ps_update_rule = input('Enter PS update rule (sgd/adam/adagrad) [default=sgd]:') or 'sgd'
-calc_grad_interval_rule = int(input('Enter interval to calculate gradients [default=1]:') or 1)
+pull_weights_interval_rule = int(input('Enter interval to pull weights from parameter server [default=1]:') or 1)
 
 iterations = 500
 
@@ -192,31 +192,32 @@ for run in range(10):
     start_time_2 = time.time()
 
     for i in range(total_iterations):
-        if i % calc_grad_interval_rule == 0:
-            # Find the specified number of workers with computed gradients
-            min_worker_updates = min(num_worker_updates.values())
-            unusable_gradients = {}
-            used_gradients = {}
-            while len(used_gradients) < num_workers_ps_update:
-                ready_gradient_list, _ = ray.wait(list(gradients))
-                for gradient_id in ready_gradient_list:
-                    if len(used_gradients) == num_workers_ps_update:
-                        break
-                    worker = gradients[gradient_id]
-                    worker_updates = num_worker_updates[worker]
-                    gradients.pop(gradient_id)
-                    if worker_updates - min_worker_updates <= stale_tolerance:
-                        used_gradients[gradient_id] = worker
-                    else:
-                        unusable_gradients[gradient_id] = worker
-            for gradient_id, worker in unusable_gradients.items():
-                gradients[gradient_id] = worker
+        # Find the specified number of workers with computed gradients
+        min_worker_updates = min(num_worker_updates.values())
+        unusable_gradients = {}
+        used_gradients = {}
+        while len(used_gradients) < num_workers_ps_update:
+            ready_gradient_list, _ = ray.wait(list(gradients))
+            for gradient_id in ready_gradient_list:
+                if len(used_gradients) == num_workers_ps_update:
+                    break
+                worker = gradients[gradient_id]
+                worker_updates = num_worker_updates[worker]
+                gradients.pop(gradient_id)
+                if worker_updates - min_worker_updates <= stale_tolerance:
+                    used_gradients[gradient_id] = worker
+                else:
+                    unusable_gradients[gradient_id] = worker
+        for gradient_id, worker in unusable_gradients.items():
+            gradients[gradient_id] = worker
 
-            # Compute and apply gradients.
-            current_weights = ps.apply_gradients.remote(*used_gradients.keys())
-            for worker in used_gradients.values():
-                gradients[worker.compute_gradients.remote(current_weights)] = worker
-                num_worker_updates[worker] += 1
+        # Compute and apply gradients.
+        pulled_weights = ps.apply_gradients.remote(*used_gradients.keys())
+        if i % pull_weights_interval_rule == 0:
+            current_weights = pulled_weights
+        for worker in used_gradients.values():
+            gradients[worker.compute_gradients.remote(current_weights)] = worker
+            num_worker_updates[worker] += 1
 
         if i % (total_iterations / 50) < 1:
             # Evaluate the current model. Evaluation occurs for a total of 50 times
@@ -233,6 +234,5 @@ for run in range(10):
     time_runs.append(elapsed_time)
     ray.shutdown()
 
-print()
 print(f"Average accuracy of 10 runs: {sum(accuracy_runs) / 10}")
 print(f"Average elapsed time of 10 runs: {sum(time_runs) / 10}")

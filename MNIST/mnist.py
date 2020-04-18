@@ -221,6 +221,6 @@ for run in range(10):
     time_runs.append(elapsed_time)
     ray.shutdown()
 
-print()
+# print()
 print(f"Average accuracy of 10 runs: {sum(accuracy_runs) / 10}")
 print(f"Average elapsed time of 10 runs: {sum(time_runs) / 10}")
