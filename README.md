@@ -10,6 +10,6 @@ The programs allow the user to specify the following parameters:
 - number of workers that send updates to the parameter server in each iteration
   (`num_workers_ps_update`)
 - learning rate (`lr`)
-- staleness tolerance of gradients among workers (`stale_tolerance`)
+- staleness tolerance of gradients among workers (`staleness_tolerance`)
 - interval for workers to pull latest weights from parameter server
   (`pull_weights_interval_rule`)
