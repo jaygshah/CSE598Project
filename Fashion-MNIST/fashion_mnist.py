@@ -165,7 +165,7 @@ ps_grad_rule = input('Enter PS gradient rule (sum/mean) [default=sum]:') or 'sum
 ps_update_rule = input('Enter PS update rule (sgd/adam/adagrad) [default=sgd]:') or 'sgd'
 pull_weights_interval_rule = int(input('Enter interval to pull weights from parameter server [default=1]:') or 1)
 
-iterations = 500
+iterations = 300
 
 accuracy_runs = []
 time_runs = []
