@@ -172,12 +172,12 @@ batch_size = int(input('Enter batch size [default=128]:') or 128)
 num_workers = int(input('Enter number of workers [default=5]:') or 5)
 num_workers_ps_update = int(input('Enter number of workers to update PS. async_baseline=1, sync_baseline=5 [default=1]:') or 1)
 lr = float(input('Enter learning rate [default=0.03]:') or 0.03)
-stale_tolerance = int(input('Enter gradient staleness tolerance. async_baseline=9999, sync_baseline=0 [default=9999]:') or 9999)
-ps_grad_rule = input('Enter PS gradient rule (sum/mean) [default=sum]:') or 'sum'
-ps_update_rule = input('Enter PS update rule (sgd/adam/adagrad) [default=sgd]:') or 'sgd'
+staleness_tolerance = int(input('Enter gradient staleness tolerance. async_baseline=9999, sync_baseline=0 [default=9999]:') or 9999)
 pull_weights_interval_rule = int(input('Enter interval to pull weights from parameter server [default=1]:') or 1)
 
 iterations = 500
+ps_grad_rule = 'sum'
+ps_update_rule = 'sgd'
 
 accuracy_runs = []
 time_runs = []
@@ -216,7 +216,7 @@ for run in range(10):
                 worker = gradients[gradient_id]
                 worker_updates = num_worker_updates[worker]
                 gradients.pop(gradient_id)
-                if worker_updates - min_worker_updates <= stale_tolerance:
+                if worker_updates - min_worker_updates <= staleness_tolerance:
                     used_gradients[gradient_id] = worker
                 else:
                     unusable_gradients[gradient_id] = worker
