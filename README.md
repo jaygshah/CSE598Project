@@ -18,6 +18,6 @@ We hypothesize that the new SGD models that have better accuracy and training ti
 
 Figure below illustrates what we mean by ahybrid model. A  hybrid  model  can  be  implemented  by  changing  the  parameters  of  a  baseline synchronous model to be more asynchronous. A hybrid model can also be implementedby changing the parameters of a baseline asynchronous model to be more synchronous. Our implementation identifies and develops parameters that can increase and decreasethe synchronicity and asynchronicity of a model.
 
-![Read the full paper here](/paper.pdf)
+[Read the full paper here](/paper.pdf)
 
 ![Overall Architecture](/images/hybrid_architecture.jpg)
